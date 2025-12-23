@@ -9,43 +9,47 @@ pipeline {
     }
 
     stages {
-        stage('Clone Repo'){
+
+        stage('Clone Repo') {
             steps {
-                git branch: 'main', url: 'https://github.com/shivam-patil-8101/CICD-jenkins.git'
+                git branch: 'main',
+                    url: 'https://github.com/shivam-patil-8101/CICD-jenkins.git'
             }
         }
 
-        stage('Build Docker Image'){
+        stage('Build Docker Image') {
             steps {
-                sh 'docker build -t ${IMAGE_NAME} .'
+                sh "docker build -t ${IMAGE_NAME} ."
             }
         }
 
-        stage('Stop & remove previuso container'){
+        stage('Stop & Remove Previous Container') {
             steps {
-                sh '''
+                sh """
                     docker stop ${CONTAINER_NAME} || true
                     docker rm ${CONTAINER_NAME} || true
-                '''
+                """
             }
         }
 
-        stage('Docker Container Run'){
+        stage('Run Docker Container') {
             steps {
-                sh '''
-                    docker run -d -p ${PORT}:${PORT} 
-                    --name ${CONTAINER_NAME} ${IMAGE_NAME}
-                '''
+                sh """
+                    docker run -d \
+                    -p ${PORT}:${PORT} \
+                    --name ${CONTAINER_NAME} \
+                    ${IMAGE_NAME}
+                """
             }
         }
 
-        stage('Send Email Notification'){
+        stage('Send Email Notification') {
             steps {
-                emaillext {
-                    subject: "NestJs App Deployed Succesfull",
-                    body: "Your nest js app is deployed! http://16.171.208.17:${PORT}/",
+                emailext(
+                    subject: "NestJS App Deployed Successfully",
+                    body: "Your NestJS app is deployed successfully! http://16.171.208.17:${PORT}/",
                     to: "${EMAIL}"
-                }
+                )
             }
         }
     }
