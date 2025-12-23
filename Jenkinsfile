@@ -9,47 +9,43 @@ pipeline {
     }
 
     stages {
-
-        stage('Clone Repo') {
+        stage('Clone Repo'){
             steps {
-                git branch: 'main',
-                    url: 'https://github.com/shivam-patil-8101/CICD-jenkins.git'
+                git branch: 'main', url: 'https://github.com/shivam-patil-8101/CICD-jenkins.git'
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Build Docker Image'){
             steps {
-                sh "docker build -t ${IMAGE_NAME} ."
+                sh 'docker build -t $IMAGE_NAME .'
             }
         }
 
-        stage('Stop & Remove Previous Container') {
+        stage('Stop & remove previuso container'){
             steps {
-                sh """
-                    docker stop ${CONTAINER_NAME} || true
-                    docker rm ${CONTAINER_NAME} || true
-                """
+                sh '''
+                    docker stop $CONTAINER_NAME || true
+                    docker rm $CONTAINER_NAME || true
+                '''
             }
         }
 
-        stage('Run Docker Container') {
+        stage('Docker Container Run'){
             steps {
-                sh """
-                    docker run -d \
-                    -p ${PORT}:${PORT} \
-                    --name ${CONTAINER_NAME} \
-                    ${IMAGE_NAME}
-                """
+                sh '''
+                    docker run -d -p ${PORT}:${PORT} 
+                    --name ${CONTAINER_NAME} ${IMAGE_NAME}
+                '''
             }
         }
 
-        stage('Send Email Notification') {
+        stage('Send Email Notification'){
             steps {
-                emailext(
-                    subject: "NestJS App Deployed Successfully",
-                    body: "Your NestJS app is deployed successfully! http://16.171.208.17:${PORT}/",
+                emaillext {
+                    subject: "NestJs App Deployed Succesfull",
+                    body: "Your nest js app is deployed! http://16.171.208.17:${PORT}/",
                     to: "${EMAIL}"
-                )
+                }
             }
         }
     }
