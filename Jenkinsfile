@@ -39,8 +39,8 @@ pipeline {
         stage('Send Email Notification'){
             steps {
                 emaillext{
-                    subject: "NestJs App Deployed Succesfull"
-                    body: "Your nest js app is deployed! http://16.171.208.17:3000/"
+                    subject: "NestJs App Deployed Succesfull",
+                    body: "Your nest js app is deployed! http://16.171.208.17:3000/",
                     to: "${EMAIL}"
                 }
             }
